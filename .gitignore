@@ -1,0 +1,2 @@
+home/.tmux/resurrect/*
+!home/.tmux/resurrect/.gitkeep
