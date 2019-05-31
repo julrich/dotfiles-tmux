@@ -306,7 +306,7 @@ setw -g pane-border-status bottom
 # activate automatic restore of last saved tmux environment on start, see:
 # https://github.com/tmux-plugins/tmux-continuum#automatic-restore
 set -g @continuum-restore 'on'
-# set -g @continuum-boot 'on'
+set -g @continuum-boot 'on'
 set -g @continuum-save-interval '15'
 
 # set color for tmux-continuum status, see:
