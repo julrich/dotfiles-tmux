@@ -37,7 +37,7 @@ tmux_conf_new_pane_reconnect_ssh=false
 # prompt for session name when creating a new session, possible values are:
 #   - true
 #   - false (default)
-tmux_conf_new_session_prompt=true
+tmux_conf_new_session_prompt=false
 
 
 # -- display -------------------------------------------------------------------
@@ -302,3 +302,63 @@ set -g mouse on
 
 # move status line to top
 #set -g status-position top
+
+
+# add spacing above status bar (consistent border around all 'panels' like this):
+# https://github.com/tmux/tmux/issues/795
+# https://www.reddit.com/r/unixporn/comments/72ebuy/macostmux_my_minimalist_tmux_setup/
+# https://github.com/tom-james-watson/dotfiles/blob/master/.tmux.conf
+setw -g pane-border-status bottom
+
+# activate automatic restore of last saved tmux environment on start, see:
+# https://github.com/tmux-plugins/tmux-continuum#automatic-restore
+set -g @continuum-restore 'on'
+set -g @continuum-boot 'on'
+set -g @continuum-save-interval '15'
+
+# set color for tmux-continuum status, see:
+# https://github.com/tmux-plugins/tmux-continuum/blob/master/scripts/variables.sh
+set -g @continuum-status-on-wrap-style '#[fg=green]#{value}#[fg=default]'
+set -g @continuum-status-off-wrap-style '#[fg=red]#{value}#[fg=default]'
+
+# try to restore pane contents on tmux resurrect, see:
+# https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_pane_contents.md
+set -g @resurrect-capture-pane-contents 'on'
+
+# try to restroe shell history on tmux resurrect, see:
+# https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_shell_history.md
+set -g @resurrect-save-shell-history 'on'
+
+# try to restore vim sessions on tmux resurrect, see:
+# https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_vim_and_neovim_sessions.md
+set -g @resurrect-strategy-vim 'session'
+
+# tmux plugin manager tpm not immediately compatible with tmux setup in use (https://github.com/gpakosz/.tmux)
+# the following doesn't work here, it has to be included in ~/.tmux/.tmux.conf at the very bottom
+# initialize tmux plugin manager, see:
+# https://github.com/tmux-plugins/tpm/blob/master/docs/tpm_not_working.md
+# List of plugins
+#set -g @tpm_plugins '             \
+#  tmux-plugins/tpm                \
+#  tmux-plugins/tmux-resurrect     \
+#  tmux-plugins/tmux-continuum     \
+#  tmux-plugins/tmux-online-status \
+#'
+
+# initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+#run '~/.tmux/plugins/tpm/tpm'
+
+# stop renaming of windows in tmux
+setw -g automatic-rename off   # rename window to reflect current program
+set -g renumber-windows on    # renumber windows when a window is closed
+
+# this was also needed, to stop all renaming taking place
+# (this is for ssh replacing window title on connect, and not setting it back), see:
+# https://stackoverflow.com/a/32622957
+set-window-option -g automatic-rename off
+set-option -g allow-rename off 
+
+# use on / off instead of icons for online-status tmux plugin, see:
+# https://github.com/tmux-plugins/tmux-online-status
+set -g @online_icon "#[fg=green]on#[fg=default]"
+set -g @offline_icon "#[fg=red]off#[fg=default]"
