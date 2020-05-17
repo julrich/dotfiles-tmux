@@ -37,7 +37,7 @@ tmux_conf_new_pane_reconnect_ssh=false
 # prompt for session name when creating a new session, possible values are:
 #   - true
 #   - false (default)
-tmux_conf_new_session_prompt=false
+tmux_conf_new_session_prompt=true
 
 
 # -- display -------------------------------------------------------------------
@@ -67,8 +67,7 @@ tmux_conf_theme_pane_border_style=fat
 
 # pane borders colours:
 tmux_conf_theme_pane_border='#041216'                   # gray
-tmux_conf_theme_pane_active_border='#041216'            # gray
-# tmux_conf_theme_pane_active_border='#00afff'            # light blue
+tmux_conf_theme_pane_active_border='#041216'            # light blue
 
 # pane indicator colours
 tmux_conf_theme_pane_indicator='#00afff'                # light blue
@@ -154,10 +153,10 @@ tmux_conf_theme_window_status_last_attr='none'
 #tmux_conf_theme_left_separator_sub='|'
 #tmux_conf_theme_right_separator_main=''
 #tmux_conf_theme_right_separator_sub='|'
-tmux_conf_theme_left_separator_main=''  # /!\ you don't need to install Powerline
-tmux_conf_theme_left_separator_sub=''   #   you only need fonts patched with
-tmux_conf_theme_right_separator_main='' #   Powerline symbols or the standalone
-tmux_conf_theme_right_separator_sub=''  #   PowerlineSymbols.otf font
+tmux_conf_theme_left_separator_main='\uE0B0'  # /!\ you don't need to install Powerline
+tmux_conf_theme_left_separator_sub='\uE0B1'   #   you only need fonts patched with
+tmux_conf_theme_right_separator_main='\uE0B2' #   Powerline symbols or the standalone
+tmux_conf_theme_right_separator_sub='\uE0B3'  #   PowerlineSymbols.otf font, see README.md
 
 # status left/right content:
 #   - separate main sections with '|'
@@ -176,13 +175,15 @@ tmux_conf_theme_right_separator_sub=''  #   PowerlineSymbols.otf font
 #     - #{prefix}
 #     - #{root}
 #     - #{synchronized}
-#     - #{uptime_d}
+#     - #{uptime_y}
+#     - #{uptime_d} (modulo 365 when #{uptime_y} is used)
 #     - #{uptime_h}
 #     - #{uptime_m}
 #     - #{uptime_s}
 #     - #{username}
 #     - #{username_ssh}
-tmux_conf_theme_status_left=' 📟 #S | ⌚#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} '
+tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_y, #{uptime_y}y,}#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} '
+#tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized} #{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} '
 tmux_conf_theme_status_right='#{prefix}#{pairing}#{synchronized} #{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , 💻 #{loadavg} / 📡 #{online_status} / 🌀 #{continuum_status} , 📆 %R / %d %b | #{username}#{root} | #{hostname} '
 
 # status left style
@@ -253,12 +254,13 @@ tmux_conf_battery_vbar_palette='gradient'
 
 # symbols used to indicate whether battery is charging or discharging
 #tmux_conf_battery_status_charging='↑'       # U+2191
-# tmux_conf_battery_status_discharging='↓'    # U+2193
-tmux_conf_battery_status_charging='⚡'    # U+26A1
-#tmux_conf_battery_status_charging='🔌'    # U+1F50C
-tmux_conf_battery_status_discharging='🔋' # U+1F50B
+#tmux_conf_battery_status_discharging='↓'    # U+2193
+tmux_conf_battery_status_charging='⚡ '    # U+26A1
+#tmux_conf_battery_status_charging='🔌 '    # U+1F50C
+tmux_conf_battery_status_discharging='🔋 ' # U+1F50B
 
-# clock style
+# clock style (when you hit <prefix> + t)
+# you may want to use %I:%M %p in place of %R in tmux_conf_theme_status_right
 tmux_conf_theme_clock_colour='#00afff'  # light blue
 tmux_conf_theme_clock_style='24'
 
@@ -276,15 +278,15 @@ tmux_conf_copy_to_os_clipboard=false
 # -- user customizations -------------------------------------------------------
 # this is the place to override or undo settings
 
-set -g default-terminal "xterm-256color" # colors!
-set -ga terminal-overrides ",rxvt-unicode-256color:Tc"
-setw -g xterm-keys off
-
+# -- URxvt colours
+#set -g default-terminal "xterm-256color" # colors!
+#set -ga terminal-overrides ",rxvt-unicode-256color:Tc"
+#setw -g xterm-keys off
 # increase history size
 set -g history-limit 10000
 
 # start with mouse mode enabled
-# set -g mouse on
+set -g mouse on
 
 # force Vi mode
 #   really you should export VISUAL or EDITOR environment variable, see manual
@@ -300,63 +302,3 @@ set -g history-limit 10000
 
 # move status line to top
 #set -g status-position top
-
-# add spacing above status bar (consistent border around all 'panels' like this):
-# https://github.com/tmux/tmux/issues/795
-# https://www.reddit.com/r/unixporn/comments/72ebuy/macostmux_my_minimalist_tmux_setup/
-# https://github.com/tom-james-watson/dotfiles/blob/master/.tmux.conf
-setw -g pane-border-status bottom
-
-# activate automatic restore of last saved tmux environment on start, see:
-# https://github.com/tmux-plugins/tmux-continuum#automatic-restore
-set -g @continuum-restore 'on'
-set -g @continuum-boot 'on'
-set -g @continuum-save-interval '15'
-
-# set color for tmux-continuum status, see:
-# https://github.com/tmux-plugins/tmux-continuum/blob/master/scripts/variables.sh
-set -g @continuum-status-on-wrap-style '#[fg=green]#{value}#[fg=default]'
-set -g @continuum-status-off-wrap-style '#[fg=red]#{value}#[fg=default]'
-
-# try to restore pane contents on tmux resurrect, see:
-# https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_pane_contents.md
-set -g @resurrect-capture-pane-contents 'on'
-
-# try to restroe shell history on tmux resurrect, see:
-# https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_shell_history.md
-set -g @resurrect-save-shell-history 'on'
-
-# try to restore vim sessions on tmux resurrect, see:
-# https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_vim_and_neovim_sessions.md
-set -g @resurrect-strategy-vim 'session'
-
-# tmux plugin manager tpm not immediately compatible with tmux setup in use (https://github.com/gpakosz/.tmux)
-# the following doesn't work here, it has to be included in ~/.tmux/.tmux.conf at the very bottom
-# initialize tmux plugin manager, see:
-# https://github.com/tmux-plugins/tpm/blob/master/docs/tpm_not_working.md
-# List of plugins
-#set -g @tpm_plugins '             \
-#  tmux-plugins/tpm                \
-#  tmux-plugins/tmux-resurrect     \
-#  tmux-plugins/tmux-continuum     \
-#  tmux-plugins/tmux-online-status \
-#'
-
-# initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-#run '~/.tmux/plugins/tpm/tpm'
-
-# stop renaming of windows in tmux
-setw -g automatic-rename off   # rename window to reflect current program
-set -g renumber-windows on    # renumber windows when a window is closed
-
-# this was also needed, to stop all renaming taking place
-# (this is for ssh replacing window title on connect, and not setting it back), see:
-# https://stackoverflow.com/a/32622957
-set-window-option -g automatic-rename off
-set-option -g allow-rename off 
-
-# use on / off instead of icons for online-status tmux plugin, see:
-# https://github.com/tmux-plugins/tmux-online-status
-set -g @online_icon "#[fg=green]on#[fg=default]"
-set -g @offline_icon "#[fg=red]off#[fg=default]"
-
