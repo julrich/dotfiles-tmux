@@ -292,6 +292,9 @@ set -g history-limit 10000
 # start with mouse mode enabled
 set -g mouse on
 
+# reduce status bar redraw interval
+set -g status-interval 20     # redraw status line every 20 seconds
+
 # force Vi mode
 #   really you should export VISUAL or EDITOR environment variable, see manual
 #set -g status-keys vi
@@ -319,7 +322,7 @@ set-option -g pane-border-format ''
 # https://github.com/tmux-plugins/tmux-continuum#automatic-restore
 set -g @continuum-restore 'on'
 set -g @continuum-boot 'on'
-set -g @continuum-save-interval '15'
+set -g @continuum-save-interval '120'
 
 # set color for tmux-continuum status, see:
 # https://github.com/tmux-plugins/tmux-continuum/blob/master/scripts/variables.sh
@@ -330,7 +333,7 @@ set -g @continuum-status-off-wrap-style '#[fg=red]#{value}#[fg=default]'
 # https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_pane_contents.md
 set -g @resurrect-capture-pane-contents 'on'
 
-# try to restroe shell history on tmux resurrect, see:
+# try to restore shell history on tmux resurrect, see:
 # https://github.com/tmux-plugins/tmux-resurrect/blob/master/docs/restoring_shell_history.md
 set -g @resurrect-save-shell-history 'on'
 
